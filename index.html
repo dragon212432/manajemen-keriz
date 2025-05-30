@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sambel Pecel Keriz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujlZH0+0vQG2j00i2oW8aN0vQz5T5J6y7dE7zN7t5Z8+P4R9A9E8b6e6F6f7g4C2L3b0L1b0w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 text-gray-800 font-poppins">
+  <div class="container mx-auto px-4 py-8">
+    <header class="text-center mb-8">
+      <h1 class="text-4xl md:text-5xl font-pacifico text-green-700 drop-shadow-md mb-2">Sambel Pecel Keriz</h1>
+      <p class="text-lg text-gray-600">Sistem Manajemen Praktis untuk Usaha Anda</p>
+    </header>
+
+    <div class="flex flex-wrap justify-center gap-4 mb-8">
+      <button onclick="showTab('uang', this)" class="tab-btn bg-green-600 text-white shadow-md active:scale-95 transition-all duration-200">
+        <i class="fas fa-wallet mr-2"></i> Manajemen Uang
+      </button>
+      <button onclick="showTab('stok', this)" class="tab-btn bg-gray-200 text-gray-700 hover:bg-gray-300 shadow-md active:scale-95 transition-all duration-200">
+        <i class="fas fa-boxes mr-2"></i> Manajemen Stok
+      </button>
+    </div>
+
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50"></div>
+
+    <div id="tab-uang" class="tab-section bg-white p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold mb-4 text-green-700 flex items-center">
+        <i class="fas fa-money-bill-transfer mr-3"></i> Transaksi Uang
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-blue-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Total Pemasukan</p>
+            <p id="totalPemasukan" class="text-xl font-bold text-blue-700">Rp 0</p>
+          </div>
+          <i class="fas fa-arrow-alt-circle-down text-blue-500 text-3xl"></i>
+        </div>
+        <div class="bg-red-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Total Pengeluaran</p>
+            <p id="totalPengeluaran" class="text-xl font-bold text-red-700">Rp 0</p>
+          </div>
+          <i class="fas fa-arrow-alt-circle-up text-red-500 text-3xl"></i>
+        </div>
+        <div class="bg-green-50 p-4 rounded-lg shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Saldo Bersih</p>
+            <p id="saldoBersih" class="text-xl font-bold text-green-700">Rp 0</p>
+          </div>
+          <i class="fas fa-coins text-green-500 text-3xl"></i>
+        </div>
+      </div>
+
+      <form id="formUang" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <input type="hidden" id="uangId" value="">
+        <input type="date" id="uangTanggal" class="form-input" required>
+        <input type="number" id="uangJumlah" placeholder="Jumlah (Rp)" class="form-input" required min="1">
+        <select id="uangJenis" class="form-input">
+          <option value="masuk">Pemasukan</option>
+          <option value="keluar">Pengeluaran</option>
+        </select>
+        <input type="text" id="uangKeterangan" placeholder="Keterangan (opsional)" class="form-input col-span-full md:col-span-2">
+        <button type="submit" class="form-btn bg-green-600 hover:bg-green-700 col-span-full md:col-span-2">
+          <i class="fas fa-plus-circle mr-2"></i> <span id="uangFormButtonText">Tambah Transaksi</span>
+        </button>
+      </form>
+
+      <h3 class="font-semibold mb-3 text-lg text-gray-700 flex items-center">
+        <i class="fas fa-history mr-2"></i> Riwayat Transaksi Uang
+      </h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <input type="date" id="filterUangTanggalAwal" class="form-input" placeholder="Dari Tanggal">
+        <input type="date" id="filterUangTanggalAkhir" class="form-input" placeholder="Sampai Tanggal">
+        <select id="filterUangJenis" class="form-input">
+          <option value="">Semua Jenis</option>
+          <option value="masuk">Pemasukan</option>
+          <option value="keluar">Pengeluaran</option>
+        </select>
+        <input type="text" id="searchUang" class="form-input" placeholder="Cari berdasarkan jumlah atau keterangan...">
+        <button id="applyFilterUang" class="form-btn bg-gray-500 hover:bg-gray-600 col-span-full"><i class="fas fa-filter mr-2"></i> Terapkan Filter</button>
+      </div>
+
+      <div class="overflow-auto max-h-72 border border-gray-200 rounded-lg shadow-inner">
+        <table class="w-full table-auto text-sm text-left" id="tabelUang">
+          <thead class="bg-green-100 sticky top-0 border-b border-green-200">
+            <tr>
+              <th class="p-3">Tanggal</th>
+              <th class="p-3">Jumlah</th>
+              <th class="p-3">Jenis</th>
+              <th class="p-3">Keterangan</th> <th class="p-3">Aksi</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <button onclick="printTable('tabelUang', 'Laporan Transaksi Uang')" class="mt-4 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition duration-200 shadow-md">
+        <i class="fas fa-print mr-2"></i> Cetak Laporan
+      </button>
+    </div>
+
+    <div id="tab-stok" class="tab-section hidden bg-white p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold mb-4 text-green-700 flex items-center">
+        <i class="fas fa-boxes-stacked mr-3"></i> Transaksi Barang
+      </h2>
+
+      <form id="formStok" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <input type="hidden" id="stokId" value="">
+        <input type="date" id="stokTanggal" class="form-input" required>
+        <input type="text" id="stokNama" placeholder="Nama Barang" class="form-input" required>
+        <input type="number" id="stokJumlah" placeholder="Jumlah" class="form-input" required min="1">
+        <select id="stokJenis" class="form-input">
+          <option value="masuk">Barang Masuk</option>
+          <option value="keluar">Barang Keluar</option>
+        </select>
+        <input type="text" id="stokKeterangan" placeholder="Keterangan (opsional)" class="form-input col-span-full md:col-span-2">
+        <button type="submit" class="form-btn bg-green-600 hover:bg-green-700 col-span-full md:col-span-2">
+          <i class="fas fa-cart-plus mr-2"></i> <span id="stokFormButtonText">Tambah Barang</span>
+        </button>
+      </form>
+
+      <h3 class="font-semibold mb-3 text-lg text-gray-700 flex items-center">
+        <i class="fas fa-boxes-alt mr-2"></i> Inventaris Stok Saat Ini
+      </h3>
+      <div class="overflow-auto max-h-72 border border-gray-200 rounded-lg shadow-inner mb-6">
+        <table class="w-full table-auto text-sm text-left" id="tabelInventarisStok">
+            <thead class="bg-blue-100 sticky top-0 border-b border-blue-200">
+                <tr>
+                    <th class="p-3">Nama Barang</th>
+                    <th class="p-3">Jumlah Stok</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+      </div>
+
+      <h3 class="font-semibold mb-3 text-lg text-gray-700 flex items-center">
+        <i class="fas fa-clipboard-list mr-2"></i> Riwayat Transaksi Barang
+      </h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <input type="date" id="filterStokTanggalAwal" class="form-input" placeholder="Dari Tanggal">
+        <input type="date" id="filterStokTanggalAkhir" class="form-input" placeholder="Sampai Tanggal">
+        <input type="text" id="searchStokNama" class="form-input" placeholder="Cari Nama Barang atau keterangan...">
+        <select id="filterStokJenis" class="form-input">
+            <option value="">Semua Jenis</option>
+            <option value="masuk">Barang Masuk</option>
+            <option value="keluar">Barang Keluar</option>
+        </select>
+        <button id="applyFilterStok" class="form-btn bg-gray-500 hover:bg-gray-600 col-span-full"><i class="fas fa-filter mr-2"></i> Terapkan Filter</button>
+      </div>
+
+      <div class="overflow-auto max-h-72 border border-gray-200 rounded-lg shadow-inner">
+        <table class="w-full table-auto text-sm text-left" id="tabelStok">
+          <thead class="bg-green-100 sticky top-0 border-b border-green-200">
+            <tr>
+              <th class="p-3">Tanggal</th>
+              <th class="p-3">Nama</th>
+              <th class="p-3">Jumlah</th>
+              <th class="p-3">Jenis</th>
+              <th class="p-3">Keterangan</th> <th class="p-3">Aksi</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <button onclick="printTable('tabelStok', 'Laporan Transaksi Barang')" class="mt-4 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition duration-200 shadow-md">
+        <i class="fas fa-print mr-2"></i> Cetak Laporan
+      </button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

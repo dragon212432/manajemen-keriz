@@ -1,0 +1,89 @@
+/* Tambahan gaya untuk memperhalus UI */
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+.font-pacifico {
+  font-family: 'Pacifico', cursive;
+}
+
+.tab-btn {
+  @apply px-5 py-2 rounded-full font-semibold transition-all duration-200 ease-in-out flex items-center justify-center;
+}
+
+.tab-btn:hover:not(.bg-green-600) { /* Hanya hover jika tidak aktif */
+  @apply bg-gray-300 text-gray-800;
+}
+
+.tab-btn.bg-green-600 { /* Gaya untuk tab aktif */
+  @apply bg-green-600 text-white;
+}
+
+table tbody tr:hover {
+  @apply bg-green-50 transition-colors duration-150; /* Efek hover yang lebih lembut */
+}
+
+/* Gaya untuk input dan select */
+.form-input {
+  @apply border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-200;
+  outline: none; /* Menghilangkan outline default browser */
+}
+
+/* Gaya untuk tombol form (Tambah Transaksi/Barang) */
+.form-btn {
+  @apply text-white rounded-lg p-2.5 font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center;
+}
+
+button:disabled {
+  @apply bg-gray-400 cursor-not-allowed;
+}
+
+/* Gaya untuk tombol hapus di tabel */
+td .bg-red-500 {
+  @apply bg-red-500 hover:bg-red-600 transition-colors duration-150;
+}
+
+/* Gaya untuk tombol edit di tabel */
+td .bg-yellow-500 {
+  @apply bg-yellow-500 hover:bg-yellow-600 transition-colors duration-150;
+}
+
+/* Gaya untuk Toast Notification */
+.toast {
+  @apply p-3 mb-2 rounded-lg text-white shadow-md flex items-center gap-2;
+  min-width: 200px;
+  max-width: 300px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fade-in-up 0.3s forwards, fade-out 0.5s 2.5s forwards;
+}
+
+.toast.success {
+  @apply bg-green-500;
+}
+
+.toast.error {
+  @apply bg-red-500;
+}
+
+.toast.info {
+  @apply bg-blue-500;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Gaya untuk ikon sorting */
+th i.fa-sort,
+th i.fa-sort-up,
+th i.fa-sort-down {
+  @apply text-xs ml-1; /* Ukuran ikon lebih kecil, margin kiri */
+}
